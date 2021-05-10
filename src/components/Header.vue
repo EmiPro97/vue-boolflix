@@ -3,20 +3,24 @@
         <div class="title-wrapper">
             <h1>BOOLFLIX</h1>
         </div>
-        <div class="search-wrapper">
-            <input v-model="inputText" type="text" placeholder="Search..." />
-            <button @click="$emit('apiCallEmitted', inputText)">Find</button>
-        </div>
+        <Search @apiCallEmitted="tmp" />
     </header>
 </template>
 
 <script>
+import Search from "./Search";
+
 export default {
     name: "Header",
-    data() {
-        return {
-            inputText: "",
-        };
+    components: {
+        Search,
+    },
+    methods: {
+        tmp(inputText) {
+            {
+                this.$emit("apiCallEmitted", inputText);
+            }
+        },
     },
 };
 </script>
