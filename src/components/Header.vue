@@ -26,8 +26,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// Vars
+@import "../styles/vars";
+
 header {
-    background: #000;
+    background: $main-bg;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -1,7 +1,12 @@
 <template>
     <div id="app">
         <Header @apiCallEmitted="apiCall" />
-        <Main :filmsArray="originalAllArray" :loading="loadingStatus" />
+        <Main
+            :filmsArray="originalAllArray"
+            :loading="loadingStatus"
+            :inputText="inputText"
+            :isEmpty="isEmpty"
+        />
     </div>
 </template>
 
@@ -20,6 +25,8 @@ export default {
         return {
             originalAllArray: [],
             loadingStatus: false,
+            inputText: "",
+            isEmpty: false,
         };
     },
     created() {
@@ -27,7 +34,9 @@ export default {
     },
     methods: {
         apiCall(text) {
+            this.isEmpty = false;
             this.loadingStatus = true;
+            this.inputText = text;
             if (text !== "") {
                 axios
                     .all([
@@ -50,7 +59,16 @@ export default {
                                 ...res[0].data.results,
                                 ...res[1].data.results,
                             ];
+                            let tmp = this.originalAllArray;
+                            tmp.forEach((el, index) => {
+                                if (el.poster_path == null && el.overview == "") {
+                                    tmp.splice(index, 1);
+                                }
+                            });
                             this.loadingStatus = false;
+                            if (this.originalAllArray.length === 0) {
+                                this.isEmpty = true;
+                            }
                         })
                     )
                     .catch((err) => console.log(err));
@@ -75,4 +93,5 @@ export default {
 
 <style lang="scss">
 @import "./styles/general";
+@import "./styles/utilities";
 </style>
