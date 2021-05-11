@@ -18,51 +18,40 @@ export default {
     },
     data() {
         return {
-            originalFilmsArray: [],
-            originalSeriesArray: [],
-			originalAllArray: [],
+            originalAllArray: [],
             loadingStatus: false,
         };
     },
     methods: {
         apiCall(text) {
             this.loadingStatus = true;
-            // setTimeout(() => {
-                 if (text !== "") {
-                    axios
-                        .get("https://api.themoviedb.org/3/search/movie", {
+            if (text !== "") {
+                axios
+                    .all([
+                        axios.get("https://api.themoviedb.org/3/search/movie", {
                             params: {
                                 api_key: "365f3969a4eff7fb7d2818a19293db37",
                                 query: text,
                             },
+                        }),
+                        axios.get("https://api.themoviedb.org/3/search/tv", {
+                            params: {
+                                api_key: "365f3969a4eff7fb7d2818a19293db37",
+                                query: text,
+                            },
+                        }),
+                    ])
+                    .then(
+                        axios.spread((...res) => {
+                            this.originalAllArray = [
+                                ...res[0].data.results,
+                                ...res[1].data.results,
+                            ];
+                            this.loadingStatus = false;
                         })
-                        .then((res) => {
-                            this.originalFilmsArray = res.data.results;
-                        })
-                        .catch((err) => console.log(err))
-                        .finally(() => {
-                            axios
-                                .get("https://api.themoviedb.org/3/search/tv", {
-                                    params: {
-                                        api_key: "365f3969a4eff7fb7d2818a19293db37",
-                                        query: text,
-                                    },
-                                })
-                                .then((res) => {
-                                    this.originalSeriesArray = res.data.results;
-                                })
-                                .catch((err) => console.log(err))
-                                .finally(() => {
-                                    this.originalAllArray = [...this.originalFilmsArray, ...this.originalSeriesArray];
-                                    this.loadingStatus = false;
-                                });
-                        });
-                }
-            // },3000);
-
-           
-
-				
+                    )
+                    .catch((err) => console.log(err));
+            }
         },
     },
 };
