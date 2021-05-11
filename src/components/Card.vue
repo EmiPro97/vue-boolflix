@@ -34,7 +34,19 @@
                 />
                 <span v-else>{{ film.original_language }}</span>
             </li>
-            <li>Vote: {{ Math.ceil(film.vote_average / 2) }}</li>
+            <li>
+                Vote:
+                <i
+                    v-for="(s, index) in Math.ceil(film.vote_average / 2)"
+                    :key="index"
+                    class="fas fa-star full"
+                ></i>
+                <i
+                    v-for="(s, index) in 5 - Math.ceil(film.vote_average / 2)"
+                    :key="'empty' + index"
+                    class="fas fa-star empty"
+                ></i>
+            </li>
         </ul>
     </div>
 </template>
@@ -60,6 +72,9 @@ ul {
         width: 25px;
         height: 15px;
         vertical-align: middle;
+    }
+    li i.full {
+        color: red;
     }
     li:last-child {
         margin-bottom: 25px;

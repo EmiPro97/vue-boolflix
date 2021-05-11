@@ -22,6 +22,9 @@ export default {
             loadingStatus: false,
         };
     },
+    created() {
+        this.landingPageCall();
+    },
     methods: {
         apiCall(text) {
             this.loadingStatus = true;
@@ -52,6 +55,19 @@ export default {
                     )
                     .catch((err) => console.log(err));
             }
+        },
+
+        landingPageCall() {
+            this.loadingStatus = true;
+            axios
+                .get(
+                    "https://api.themoviedb.org/3/trending/all/week?api_key=365f3969a4eff7fb7d2818a19293db37"
+                )
+                .then((res) => {
+                    this.originalAllArray = res.data.results;
+                    this.loadingStatus = false;
+                })
+                .catch((err) => console.log(err));
         },
     },
 };
