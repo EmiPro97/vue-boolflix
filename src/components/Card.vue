@@ -77,11 +77,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// Vars
+@import "../styles/vars";
+
 .card-wrapper {
     width: 342px;
+    min-height: 516.5px;
     position: relative;
     margin: 10px 3px;
+    border-radius: 5px;
+    overflow: hidden;
     cursor: pointer;
+    transition: all 0.3s 0.5s;
     & > img {
         width: 100%;
         height: 100%;
@@ -96,9 +103,8 @@ export default {
         left: 0;
         right: 0;
         padding: 0 20px;
-        transition: opacity 0.7s;
+        transition: opacity 1.3s;
         background: rgba(0, 0, 0, 0.5);
-        overflow: hidden;
         strong {
             font-size: 18px;
             margin-right: 3px;
@@ -117,6 +123,11 @@ export default {
             height: 15px;
             vertical-align: middle;
         }
+    }
+    &:hover {
+        // transition: z-index 0s 1s, transform 0.5s 0.8s;
+        transform: perspective(550px) translate3d(0px, -16px, 29px);
+        z-index: 2;
     }
     &:hover .hover-card {
         opacity: 1;

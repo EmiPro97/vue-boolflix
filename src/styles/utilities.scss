@@ -4,8 +4,17 @@
     display: flex;
 }
 
+.flex-column {
+    display: inline-flex;
+    flex-direction: column;
+}
+
 .justify-center {
     justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
 }
 
 .align-center {
@@ -14,4 +23,37 @@
 
 .flex-wrap {
     flex-wrap: wrap;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 0 20px;
+    max-width: 1780px;
+}
+
+// RESPONSIVE
+
+// < 1780px
+@media screen and (max-width: 1779px) {
+    .container {
+        max-width: 1432px;
+    }
+}
+// < 1432px
+@media screen and (max-width: 1431px) {
+    .container {
+        max-width: 1084px;
+    }
+}
+// < 1084px
+@media screen and (max-width: 1083px) {
+    .container {
+        max-width: 736px;
+    }
+}
+// < 736px
+@media screen and (max-width: 735px) {
+    .container {
+        max-width: 342px;
+    }
 }

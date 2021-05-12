@@ -1,8 +1,13 @@
 <template>
     <div id="app">
-        <Header @apiCallEmitted="apiCall" />
+        <Header
+            @apiCallEmitted="apiCall"
+            :landingPage="landingPageCall"
+            @updateIsEmpty="updateIsEmpty"
+        />
         <Main
             :filmsArray="originalAllArray"
+            :topWeek="topWeek"
             :loading="loadingStatus"
             :inputText="inputText"
             :isEmpty="isEmpty"
@@ -27,6 +32,7 @@ export default {
             loadingStatus: false,
             inputText: "",
             isEmpty: false,
+            topWeek: [],
         };
     },
     created() {
@@ -34,23 +40,24 @@ export default {
     },
     methods: {
         apiCall(text) {
-            this.isEmpty = false;
-            this.loadingStatus = true;
-            this.inputText = text;
-            if (text !== "") {
+            if (text === this.inputText) {
+                return;
+            } else if (text !== "") {
+                this.topWeek = [];
+                this.isEmpty = false;
+                this.loadingStatus = true;
+                this.inputText = text;
+                const apiParams = {
+                    api_key: "365f3969a4eff7fb7d2818a19293db37",
+                    query: text,
+                };
                 axios
                     .all([
                         axios.get("https://api.themoviedb.org/3/search/movie", {
-                            params: {
-                                api_key: "365f3969a4eff7fb7d2818a19293db37",
-                                query: text,
-                            },
+                            params: apiParams,
                         }),
                         axios.get("https://api.themoviedb.org/3/search/tv", {
-                            params: {
-                                api_key: "365f3969a4eff7fb7d2818a19293db37",
-                                query: text,
-                            },
+                            params: apiParams,
                         }),
                     ])
                     .then(
@@ -61,7 +68,10 @@ export default {
                             ];
                             let tmp = this.originalAllArray;
                             tmp.forEach((el, index) => {
-                                if (el.poster_path == null && el.overview == "") {
+                                if (
+                                    el.poster_path == null &&
+                                    el.overview.trim() == ""
+                                ) {
                                     tmp.splice(index, 1);
                                 }
                             });
@@ -72,20 +82,29 @@ export default {
                         })
                     )
                     .catch((err) => console.log(err));
+            } else {
+                this.landingPageCall();
             }
         },
 
         landingPageCall() {
-            this.loadingStatus = true;
-            axios
-                .get(
-                    "https://api.themoviedb.org/3/trending/all/week?api_key=365f3969a4eff7fb7d2818a19293db37"
-                )
-                .then((res) => {
-                    this.originalAllArray = res.data.results;
-                    this.loadingStatus = false;
-                })
-                .catch((err) => console.log(err));
+            if (this.topWeek.length === 0) {
+                this.originalAllArray = [];
+                this.loadingStatus = true;
+                axios
+                    .get(
+                        "https://api.themoviedb.org/3/trending/all/week?api_key=365f3969a4eff7fb7d2818a19293db37"
+                    )
+                    .then((res) => {
+                        this.topWeek = res.data.results;
+                        this.loadingStatus = false;
+                    })
+                    .catch((err) => console.log(err));
+            }
+        },
+
+        updateIsEmpty() {
+            this.isEmpty = false;
         },
     },
 };
