@@ -3,20 +3,29 @@
         <Header
             @apiCallEmitted="apiCall"
             :landingPage="landingPageCall"
+            :getMovies="getMovies"
+            :getTvSeries="getTvSeries"
+            :getNewPopular="getNewPopular"
+            :getMyList="getMyList"
             @updateIsEmpty="updateIsEmpty"
         />
+
+        <Jumbotron :settedArray="settedArray" />
+
         <Main
             :filmsArray="originalAllArray"
-            :topWeek="topWeek"
+            :settedArray="settedArray"
             :loading="loadingStatus"
             :inputText="inputText"
             :isEmpty="isEmpty"
+            :currentNavID="currentNavID"
         />
     </div>
 </template>
 
 <script>
 import Header from "@/components/Header";
+import Jumbotron from "@/components/Jumbotron";
 import Main from "@/components/Main";
 import axios from "axios";
 
@@ -25,6 +34,7 @@ export default {
     components: {
         Header,
         Main,
+        Jumbotron,
     },
     data() {
         return {
@@ -32,7 +42,15 @@ export default {
             loadingStatus: false,
             inputText: "",
             isEmpty: false,
-            topWeek: [],
+            settedArray: [],
+            headerNav: [
+                { text: "Home", url: "#", active: true },
+                { text: "Movies", url: "#", active: false },
+                { text: "Tv Series", url: "#", active: false },
+                { text: "New and Popular", url: "#", active: false },
+                { text: "My List", url: "#", active: false },
+            ],
+            currentNavID: 0,
         };
     },
     created() {
@@ -43,7 +61,7 @@ export default {
             if (text === this.inputText) {
                 return;
             } else if (text !== "") {
-                this.topWeek = [];
+                this.settedArray = [];
                 this.isEmpty = false;
                 this.loadingStatus = true;
                 this.inputText = text;
@@ -83,28 +101,95 @@ export default {
                     )
                     .catch((err) => console.log(err));
             } else {
-                this.landingPageCall();
+                this.isEmpty = false;
+                if (this.headerNav[this.currentNavID].text === "Home") {
+                    this.landingPageCall();
+                } else if (this.headerNav[this.currentNavID].text === "Movies") {
+                    this.getMovies();
+                } else if (this.headerNav[this.currentNavID].text === "Tv Series") {
+                    this.getTvSeries();
+                } else if (
+                    this.headerNav[this.currentNavID].text === "New and Popular"
+                ) {
+                    this.getNewPopular();
+                } else if (this.headerNav[this.currentNavID].text === "My List") {
+                    this.getMyList();
+                }
             }
         },
 
         landingPageCall() {
-            if (this.topWeek.length === 0) {
-                this.originalAllArray = [];
-                this.loadingStatus = true;
-                axios
-                    .get(
-                        "https://api.themoviedb.org/3/trending/all/week?api_key=365f3969a4eff7fb7d2818a19293db37"
-                    )
-                    .then((res) => {
-                        this.topWeek = res.data.results;
-                        this.loadingStatus = false;
-                    })
-                    .catch((err) => console.log(err));
-            }
+            this.originalAllArray = [];
+            this.loadingStatus = true;
+            axios
+                .get(
+                    "https://api.themoviedb.org/3/trending/all/week?api_key=365f3969a4eff7fb7d2818a19293db37"
+                )
+                .then((res) => {
+                    this.settedArray = res.data.results;
+                })
+                .catch((err) => console.log(err))
+                .finally(() => {
+                    this.loadingStatus = false;
+                });
         },
 
-        updateIsEmpty() {
+        getMovies() {
+            this.originalAllArray = [];
+            this.loadingStatus = true;
+            axios
+                .get(
+                    " https://api.themoviedb.org/3/movie/top_rated?api_key=365f3969a4eff7fb7d2818a19293db37"
+                )
+                .then((res) => {
+                    this.settedArray = res.data.results;
+                    this.loadingStatus = false;
+                })
+                .catch((err) => console.log(err));
+        },
+
+        getTvSeries() {
+            this.originalAllArray = [];
+            this.loadingStatus = true;
+            axios
+                .get(
+                    "https://api.themoviedb.org/3/tv/top_rated?api_key=365f3969a4eff7fb7d2818a19293db37"
+                )
+                .then((res) => {
+                    this.settedArray = res.data.results;
+                    this.loadingStatus = false;
+                })
+                .catch((err) => console.log(err));
+        },
+
+        getNewPopular() {
+            this.originalAllArray = [];
+            this.loadingStatus = true;
+            axios
+                .get(
+                    "https://api.themoviedb.org/3/movie/now_playing?api_key=365f3969a4eff7fb7d2818a19293db37"
+                )
+                .then((res) => {
+                    this.settedArray = res.data.results;
+                    this.loadingStatus = false;
+                })
+                .catch((err) => console.log(err));
+        },
+
+        getMyList() {
+            this.originalAllArray = [];
+            this.settedArray = [];
+        },
+
+        updateIsEmpty(index) {
+            this.currentNavID = index;
             this.isEmpty = false;
+            this.headerNav.forEach((element) => {
+                if (element.active === true) {
+                    element.active = false;
+                }
+            });
+            this.headerNav[index].active = true;
         },
     },
 };

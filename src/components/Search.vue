@@ -53,6 +53,7 @@ export default {
     transition: all 0.3s linear;
     &.open {
         border: 1px solid #fff;
+        background: $main-bg;
         padding: 5px 15px 5px 5px;
         width: 250px;
     }

@@ -44,7 +44,7 @@
                     <span v-else>{{ film.original_language }}</span>
                 </li>
                 <li>
-                    Vote:
+                    <strong>Vote</strong>:
                     <i
                         v-for="(s, index) in Math.ceil(film.vote_average / 2)"
                         :key="index"
