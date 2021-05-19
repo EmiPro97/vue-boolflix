@@ -4,10 +4,13 @@
         ref="header"
         class="flex align-center justify-between"
     >
+        <!-- Header-left-side -->
         <div class="left-wrapper flex align-center">
+            <!-- Logo-img -->
             <a class="logo-link" href="#"
                 ><img src="../assets/imges/boolflix-logo.png" alt="boolflix-logo"
             /></a>
+            <!-- Main-nav -->
             <nav>
                 <ul class="flex">
                     <li
@@ -26,14 +29,19 @@
                 </ul>
             </nav>
         </div>
+        <!-- Header-right-side -->
         <div class="right-wrapper flex align-center">
+            <!-- Search-component -->
             <Search @apiCallEmitted="tmp" />
+            <!-- Gift-item -->
             <div>
                 <a href="#"><i class="fas fa-gift"></i></a>
             </div>
+            <!-- Bell-item -->
             <div>
                 <a href="#"><i class="fas fa-bell"></i></a>
             </div>
+            <!-- Profile avatar -->
             <div class="avatar-wrap">
                 <img src="../assets/imges/avatar.png" alt="avatar-img" />
             </div>
@@ -70,6 +78,7 @@ export default {
         };
     },
     mounted() {
+        // Update isFixed value on scroll
         window.onscroll = () => {
             let header = this.$refs.header;
             if (window.scrollY > header.offsetTop) {
@@ -80,6 +89,8 @@ export default {
         };
     },
     methods: {
+        // Second emit from search component to App +
+        // Interactivity with header nav while searching in the input
         tmp(inputText) {
             if (inputText !== "") {
                 this.headerNav.forEach((element, index) => {
@@ -96,6 +107,8 @@ export default {
             }
         },
 
+        // Switch element class active on header nav item click +
+        // API call to the respective item clicked
         activeLink(index) {
             this.currentNavID = index;
             this.headerNav.forEach((element) => {
@@ -172,6 +185,8 @@ header {
                 transform: scale(1.05);
             }
             &.avatar-wrap {
+                border-radius: 5px;
+                overflow: hidden;
                 width: 35px;
                 height: 35px;
                 cursor: pointer;

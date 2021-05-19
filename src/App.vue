@@ -54,9 +54,11 @@ export default {
         };
     },
     created() {
+        // API call on page refresh, return an array
         this.landingPageCall();
     },
     methods: {
+        // Main function, API call if something is researched in the input
         apiCall(text) {
             if (text === this.inputText) {
                 return;
@@ -84,15 +86,14 @@ export default {
                                 ...res[0].data.results,
                                 ...res[1].data.results,
                             ];
-                            let tmp = this.originalAllArray;
-                            tmp.forEach((el, index) => {
-                                if (
-                                    el.poster_path == null &&
-                                    el.overview.trim() == ""
-                                ) {
-                                    tmp.splice(index, 1);
+                            this.originalAllArray = [...this.originalAllArray].filter(
+                                (el) => {
+                                    return (
+                                        el.poster_path !== null &&
+                                        Boolean(el.overview)
+                                    );
                                 }
-                            });
+                            );
                             this.loadingStatus = false;
                             if (this.originalAllArray.length === 0) {
                                 this.isEmpty = true;
@@ -134,6 +135,7 @@ export default {
                 });
         },
 
+        // Return top rated movies
         getMovies() {
             this.originalAllArray = [];
             this.loadingStatus = true;
@@ -148,6 +150,7 @@ export default {
                 .catch((err) => console.log(err));
         },
 
+        // Return top rated tv series
         getTvSeries() {
             this.originalAllArray = [];
             this.loadingStatus = true;
@@ -162,6 +165,7 @@ export default {
                 .catch((err) => console.log(err));
         },
 
+        // Return in theatres movies
         getNewPopular() {
             this.originalAllArray = [];
             this.loadingStatus = true;
@@ -176,11 +180,13 @@ export default {
                 .catch((err) => console.log(err));
         },
 
+        // Return my list
         getMyList() {
             this.originalAllArray = [];
             this.settedArray = [];
         },
 
+        // Update isEmpty value (used in main component) on header-nav click
         updateIsEmpty(index) {
             this.currentNavID = index;
             this.isEmpty = false;

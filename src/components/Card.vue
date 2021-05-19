@@ -26,7 +26,7 @@
                     <strong>Title:</strong> {{ film.title || film.name }}
                 </li>
                 <template v-else>
-                    <li>Title: {{ film.title || film.name }}</li>
+                    <li><strong>Title:</strong> {{ film.title || film.name }}</li>
                     <li>
                         <strong>Original-Title:</strong>
                         {{ film.original_title || film.original_name }}
@@ -96,6 +96,7 @@ export default {
         object-position: center;
     }
     .hover-card {
+        overflow: auto;
         opacity: 0;
         position: absolute;
         top: 0;

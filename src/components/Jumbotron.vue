@@ -35,7 +35,7 @@ export default {
     data() {
         return {
             jumboImgArray: [],
-            randomIndex: 0,
+            randomIndex: undefined,
             dataReady: false,
         };
     },
